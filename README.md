@@ -18,13 +18,12 @@ $ sudo docker compose build
 ```bash
 $ sudo docker compose up
 ```
-```bash
-$ docker compose build
-```
+
 
 ## Contato/Contact
 
-Qualquer dúvida, entrar em contato/ Any further question, please contact me:
-:email: viniciusvale73@gmail.com
-:iphone: +55 16 981236220
+### Qualquer dúvida, entrar em contato/ Any further question, please contact me:
+
+#### :email: viniciusvale73@gmail.com
+##### :iphone: +55 16 981236220
 
