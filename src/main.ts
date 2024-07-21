@@ -8,8 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Amor Saúde - Test')
-    .setDescription('API made for Amor Saúde test by Vinicius Vale')
+    .setTitle('Pets APi')
+    .setDescription('API made for a Pets API')
     .setVersion('1.0')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },

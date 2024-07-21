@@ -2,9 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AnimalsEntity } from './animals.entities';
 
 @Entity()
 export class EnterpriseEntity {
@@ -22,6 +25,10 @@ export class EnterpriseEntity {
 
   @Column()
   regional: string;
+
+  @OneToMany(() => AnimalsEntity, (animal: AnimalsEntity) => animal.company)
+  @JoinColumn()
+  public animals: AnimalsEntity[];
 
   @Column()
   openingDate: Date;
