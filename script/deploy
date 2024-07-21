@@ -1,5 +1,6 @@
 #!/bin/sh
 cd ~/server/pets-api
+npm install --global yarn
 git pull origin master
 yarn
 pm2 restart ecosystem.config.js
