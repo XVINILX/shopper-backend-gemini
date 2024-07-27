@@ -6,7 +6,7 @@ import 'reflect-metadata';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  ///////
+
   const config = new DocumentBuilder()
     .setTitle('Pets APi')
     .setDescription('API made for a Pets API')
