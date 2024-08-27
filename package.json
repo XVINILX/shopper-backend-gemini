@@ -21,8 +21,9 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm:generate": "yarn build && yarn typeorm -d ./dist/typeOrm.config.js migration:generate ./type-orm/migrations/new-entity",
-    "migration:run": "yarn build && yarn typeorm -d ./typeOrm.config.js migration:run",
-    "migration:revert": "yarn typeorm -d dist/typeOrm.config.js migration:revert NewEntity17009458846"
+    "typeorm:create": "yarn build && yarn typeorm migration:create ./type-orm/migrations/new-entity",
+    "migration": "yarn build && yarn typeorm -d ./dist/typeOrm.config.js migration:run",
+    "migration:revert": "yarn build yarn typeorm -d dist/typeOrm.config.js migration:revert NewEntity17009458846"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",

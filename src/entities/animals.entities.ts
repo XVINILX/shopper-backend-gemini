@@ -2,13 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { EnterpriseEntity } from './enterprise.entities';
+import { UserEntity } from './user.entities';
 
 @Entity()
 export class AnimalsEntity {
@@ -41,6 +40,15 @@ export class AnimalsEntity {
     (company: EnterpriseEntity) => company.animals,
   )
   public company: EnterpriseEntity;
+
+  @ManyToOne(() => UserEntity, (enterprise: UserEntity) => enterprise)
+  public receiver: UserEntity;
+
+  @Column()
+  public donatedAt: Date;
+
+  @Column()
+  public status: string;
 
   @Column()
   public principalPictureUuid: string;
