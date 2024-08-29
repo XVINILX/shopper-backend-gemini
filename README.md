@@ -19,6 +19,9 @@ $ sudo docker compose build
 $ sudo docker compose up
 ```
 
+## Generative AI
+Addition of @google/generative-ai as dependency
+
 
 ## Contato/Contact
 

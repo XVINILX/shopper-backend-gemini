@@ -4,19 +4,19 @@ import { AppController } from './app.controller';
 import { UserModule } from './user/user.modules';
 import { AuthModule } from './core/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { EnterpriseModule } from './enterprise/enterprise.modules';
+
 import { ConfigModule } from '@nestjs/config';
 import { DataSource } from 'typeorm';
-import { AnimalsModule } from './animals/animals.modules';
-import { PageConfigModule } from './pageConfig/pageConfig.modules';
+
+import { StorageService } from './storage/services/storage.service';
+import { StorageController } from './storage/controller/storage.controller';
+import { StorageModule } from './storage/storage.module';
 
 @Module({
   imports: [
     UserModule,
     AuthModule,
-    AnimalsModule,
-    EnterpriseModule,
-    PageConfigModule,
+
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
@@ -29,10 +29,12 @@ import { PageConfigModule } from './pageConfig/pageConfig.modules';
       synchronize: true,
     }),
     UserModule,
+
+    StorageModule,
   ],
 
-  controllers: [AppController],
-  providers: [],
+  controllers: [AppController, StorageController],
+  providers: [StorageService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

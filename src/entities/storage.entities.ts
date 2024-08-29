@@ -2,33 +2,28 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 import { MeasurementEntity } from './measurement.entities';
 
 @Entity()
-export class UserEntity {
+export class StorageEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({
-    unique: true,
-  })
-  customer_code: string;
-
-  @OneToMany(
+  @OneToOne(
     () => MeasurementEntity,
-    (measurement: MeasurementEntity) => measurement.user,
+    (measurement: MeasurementEntity) => measurement.storage,
   )
-  measurements: MeasurementEntity[];
-
-  @Column({ unique: true })
-  email: string;
+  @JoinColumn()
+  public measurement: MeasurementEntity;
 
   @Column()
-  password: string;
+  url: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -26,6 +26,7 @@
     "migration:revert": "yarn build yarn typeorm -d dist/typeOrm.config.js migration:revert NewEntity17009458846"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.17.1",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^10.0.0",
@@ -41,7 +42,8 @@
     "pg": "^8.11.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.17"
+    "typeorm": "^0.3.17",
+    "uuidv4": "^6.2.13"
   },
   "devDependencies": {
     "@nestjs/class-validator": "0.13.4",
