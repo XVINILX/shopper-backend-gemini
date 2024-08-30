@@ -23,7 +23,7 @@ export class StorageEntity {
   public measurement: MeasurementEntity;
 
   @Column()
-  url: string;
+  image_url: string;
 
   @CreateDateColumn()
   createdAt: Date;

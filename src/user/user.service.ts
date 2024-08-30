@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { UpdateUserDto } from './domain/dtos/update-user.dto';
 import { UserEntity } from 'src/entities/user.entities';
 import { CreateUserDto } from './domain/dtos/create-user.dto';
@@ -18,7 +18,10 @@ export class UserService {
    * @param id string - User id
    */
 
-  async createUser(createUser: CreateUserDto): Promise<UserEntity> {
+  async createUser(
+    createUser: CreateUserDto,
+    customer_code: string,
+  ): Promise<UserEntity> {
     try {
       const newPassword = await bcrypt.hash(
         createUser.password,
@@ -27,7 +30,7 @@ export class UserService {
 
       createUser.password = newPassword;
 
-      const user = this.userRepository.create(createUser);
+      const user = this.userRepository.create({ ...createUser, customer_code });
 
       return this.userRepository.save(user);
     } catch (error) {
@@ -68,16 +71,18 @@ export class UserService {
 
   async listAll(items?: number, page?: number) {
     try {
-      const userList = await this.userRepository.find();
+      const skip = (page - 1) * items;
+      const take = items;
 
-      if (items && page) {
-        const initialSlice = items * page;
-        const finalSlice = items * page + items;
+      const query: FindManyOptions<UserEntity> =
+        skip && take
+          ? {
+              skip,
+              take,
+            }
+          : {};
 
-        const paginatedUserList = userList.slice(initialSlice, finalSlice);
-
-        return paginatedUserList ? paginatedUserList : [];
-      }
+      const userList = await this.userRepository.find(query);
 
       return userList ? userList : [];
     } catch (error) {
@@ -107,6 +112,21 @@ export class UserService {
     try {
       const user = await this.userRepository.findOne({
         where: { email: email },
+      });
+
+      return user ? user : null;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  /**
+   * @param email string - Find User according to his email
+   */
+  async findCustomerCode(customer_code: string) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { customer_code: customer_code },
       });
 
       return user ? user : null;

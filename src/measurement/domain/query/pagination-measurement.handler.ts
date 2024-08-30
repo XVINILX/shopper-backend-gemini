@@ -33,7 +33,7 @@ export class PaginationUserHandler
                 measure_datetime: measurement.measure_datetime,
                 measure_type: measurement.measure_type,
                 has_confirmed: measurement.confirmed,
-                image_url: measurement.image_url,
+                image_url: measurement.storage.image_url,
               };
             }),
             total: measurements.length,

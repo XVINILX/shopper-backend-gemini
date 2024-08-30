@@ -11,6 +11,10 @@ export class ReadUserDto {
   email: string;
 
   @ApiProperty()
+  @IsString()
+  customer_code: string;
+
+  @ApiProperty()
   createdAt: Date;
 
   @ApiProperty()

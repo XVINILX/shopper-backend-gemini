@@ -4,16 +4,58 @@ import { AuthLoginDTO } from './domain/dto/auth-login.dto';
 import { UserService } from 'src/user/user.service';
 import { AuthRegisterDTO } from './domain/dto/auth-register.dto';
 import { CreateUserDto } from 'src/user/domain/dtos/create-user.dto';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  OnModuleInit,
+} from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthAuthenticateDTO } from './domain/dto/auth-authenticate.dto';
 import { AuthResetDto } from './domain/dto/auth-reset.dto';
+import { generateCustomerCode } from 'src/utils/generate-customer-code';
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
   ) {}
+
+  async onModuleInit() {
+    const initialUserEmail = 'admin@example.com';
+    const initialUserPassword = 'Admin@123';
+
+    const existingUser =
+      await this.userService.findUserByEmail(initialUserEmail);
+
+    if (!existingUser) {
+      const hashedPassword = await bcrypt.hash(initialUserPassword, 10);
+
+      const initialUser: CreateUserDto = {
+        email: initialUserEmail,
+        password: hashedPassword,
+      };
+
+      let customeDontExist = true;
+      const maxTries = 5;
+      let quantityTries = 0;
+      let customerCode = '';
+      while (customeDontExist || quantityTries < maxTries) {
+        customerCode = generateCustomerCode();
+
+        const userByCustomerCode =
+          await this.userService.findCustomerCode(customerCode);
+        quantityTries++;
+
+        if (!userByCustomerCode) customeDontExist = false;
+      }
+
+      await this.userService.createUser(initialUser, customerCode);
+      console.log(`Initial user with email ${initialUserEmail} created.`);
+    } else {
+      console.log(`User with email ${initialUserEmail} already exists.`);
+    }
+  }
 
   async createToken(user: CreateUserDto, id: string) {
     return {
@@ -68,7 +110,21 @@ export class AuthService {
 
   async register(data: CreateUserDto) {
     try {
-      const newUser = await this.userService.createUser(data);
+      let customeDontExist = true;
+      const maxTries = 5;
+      let quantityTries = 0;
+      let customerCode = '';
+      while (customeDontExist || quantityTries < maxTries) {
+        customerCode = generateCustomerCode();
+
+        const userByCustomerCode =
+          await this.userService.findCustomerCode(customerCode);
+        quantityTries++;
+
+        if (!userByCustomerCode) customeDontExist = false;
+      }
+
+      const newUser = await this.userService.createUser(data, customerCode);
 
       const authToken = await this.createToken(data, newUser.id);
 

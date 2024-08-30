@@ -5,11 +5,12 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
-import { MeasurementType } from 'src/entities/enums/measurement.enum';
+import { MeasurementType } from '../../../entities/enums/measurement.enum';
+import { Type } from 'class-transformer';
 
 export class CreateRequestMeasurementDto {
   @IsNotEmpty()
-  @IsBase64()
+  @IsString()
   image: string;
 
   @IsNotEmpty()
@@ -17,6 +18,7 @@ export class CreateRequestMeasurementDto {
   customer_code: string;
 
   @IsNotEmpty()
+  @Type(() => Date)
   @IsDate()
   measure_datetime: Date;
 

@@ -1,31 +1,35 @@
-version: '3.9'
+version: '3.8'
+
 services:
-  nestapp:
-    container_name: nestapp
-    image: vinicius/nestapp:1.0.0
-    build: .
-    ports:
-      - '3000:3000'
-    environment:
-      - DB_TYPE=postgres
-      - PG_USER=postgres
-      - PG_PASSWORD=postgres
-      - PG_DB=postgres
-      - PG_PORT=5432
-      - PG_HOST=db
-      - JWT_KEY = K89o5vacY5297NO5vDXQRrMz2MZYncCyxMIXizlB
-    depends_on:
-      - db
-  db:
-    container_name: db
-    image: postgres:12
+  postgres:
+    image: postgres:13
+    container_name: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: geminiteste
     ports:
-      - '5432:5432'
+      - "5433:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nestjs-app
+    depends_on:
+      - postgres
+    environment:
+      PG_HOST: postgres
+      DB_PORT: 5432
+      PG_USER: postgres
+      PG_PASSWORD: root
+      PG_DB: geminiteste
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+    ports:
+      - "3000:3000"
+
+
 volumes:
-  pgdata: {}
+  postgres_data:

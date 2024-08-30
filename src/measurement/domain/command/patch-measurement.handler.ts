@@ -12,16 +12,12 @@ export class PatchUserHandler
   constructor(private measurementService: MeasurementService) {}
 
   async execute(command: PatchMeasurementCommand) {
-    try {
-      const { patcMeasurementDto } = command;
-      const patchMeasurement =
-        await this.measurementService.patchMeasurement(patcMeasurementDto);
+    const { patcMeasurementDto } = command;
+    const patchMeasurement =
+      await this.measurementService.patchMeasurement(patcMeasurementDto);
 
-      return <SuccessDto>{
-        ...patchMeasurement,
-      };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    return <SuccessDto>{
+      ...patchMeasurement,
+    };
   }
 }

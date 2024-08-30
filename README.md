@@ -1,4 +1,4 @@
-# PETS-API
+# Gemini Integration
 
 ## Descrição/Description
 ### Api desenvolvida para cadastro de empresas e usuários com autenticação
@@ -12,7 +12,7 @@
 
 ## Como rodar o projeto?/ Running the project
 ```bash
-$ sudo docker compose build
+$ sudo docker compose build --no-cache
 ```
 
 ```bash

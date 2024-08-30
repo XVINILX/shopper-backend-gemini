@@ -22,6 +22,7 @@ export class PaginationUserHandler
               return <ReadUserDto>{
                 email: user.email,
                 id: user.id,
+                customer_code: user.customer_code,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
               };

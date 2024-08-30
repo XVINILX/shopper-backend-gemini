@@ -1,10 +1,5 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-
-// Define a type for the custom error format
-interface CustomErrorResponse {
-  error_code: string;
-  error_description: string;
-}
+import { CustomErrorResponse } from './error-response.dto';
 
 export function createHttpException(
   errorResponse: CustomErrorResponse,

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MeasurementEntity } from 'src/entities/measurement.entities';
-import { Between, Repository } from 'typeorm';
+import { Between, FindManyOptions, Repository } from 'typeorm';
 import { CreateMeasurementDto } from '../domain/dtos/create-measurement.dto';
 import { CreateRequestMeasurementDto } from '../domain/dtos/create-request-measurement.dto';
 import { StorageEntity } from 'src/entities/storage.entities';
@@ -9,6 +9,7 @@ import { PatchRequestMeasurementDto } from '../domain/dtos/patch-request-measure
 import { createHttpException } from 'src/utils/exception.utils';
 import { MeasurementType } from 'src/entities/enums/measurement.enum';
 import { SuccessDto } from 'src/utils/success.dto';
+import { UserEntity } from 'src/entities/user.entities';
 
 @Injectable()
 export class MeasurementService {
@@ -18,15 +19,21 @@ export class MeasurementService {
 
     @InjectRepository(StorageEntity)
     private storageRepository: Repository<StorageEntity>,
+
+    @InjectRepository(UserEntity)
+    private userEntity: Repository<UserEntity>,
   ) {}
 
   async createMeasurement(
     createMeasurement: CreateMeasurementDto,
+    customer_code: string,
   ): Promise<MeasurementEntity> {
     try {
       const storageEntity = await this.storageRepository.findOne({
         where: { id: createMeasurement.storage },
       });
+
+      const user = await this.userEntity.findOne({ where: { customer_code } });
 
       const measurementEntity = this.measurementRepository.create({
         measure_type: createMeasurement.measure_type,
@@ -35,9 +42,10 @@ export class MeasurementService {
         monthMeasurement: createMeasurement.monthMeasurement,
         yearMeasurement: createMeasurement.yearMeasurement,
         value: createMeasurement.value,
+        user: user,
       });
 
-      return this.measurementRepository.save(measurementEntity);
+      return await this.measurementRepository.save(measurementEntity);
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }
@@ -51,7 +59,7 @@ export class MeasurementService {
       const month = measureDate.getMonth();
       const year = measureDate.getFullYear();
 
-      const findMeasurement = this.measurementRepository.findOne({
+      const findMeasurement = await this.measurementRepository.findOne({
         where: {
           measure_datetime: Between(
             new Date(year, month, 1),
@@ -78,14 +86,26 @@ export class MeasurementService {
       const skip = (page - 1) * items;
       const take = items;
 
-      const findMeasurement = this.measurementRepository.find({
-        where: {
-          user: { customer_code: customercode },
-          measure_type,
-        },
-        skip,
-        take,
-      });
+      const query: FindManyOptions<MeasurementEntity> =
+        skip && take
+          ? {
+              where: {
+                user: { customer_code: customercode },
+                measure_type,
+              },
+              relations: ['storage'],
+              skip,
+              take,
+            }
+          : {
+              where: {
+                user: { customer_code: customercode },
+                measure_type,
+              },
+              relations: ['storage'],
+            };
+
+      const findMeasurement = await this.measurementRepository.find(query);
 
       return findMeasurement;
     } catch (error) {
@@ -123,7 +143,7 @@ export class MeasurementService {
         {
           id: patcMeasurementDto.measure_uuid,
         },
-        { value: patcMeasurementDto.confirmed_value },
+        { value: patcMeasurementDto.confirmed_value, confirmed: true },
       );
 
       return { success: Boolean(findMeasurement) };

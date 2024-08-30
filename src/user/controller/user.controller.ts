@@ -12,9 +12,7 @@ import { GetUserByIdQuery } from '../domain/query/find-by-id-user.query';
 
 import { PaginationUserQuery } from '../domain/query/pagination-user.query';
 import { ListUserDto } from '../domain/dtos/list-user.dto';
-import { AuthGuard } from 'src/core/guards/auth.guards';
 
-@UseGuards(AuthGuard)
 @ApiBearerAuth('jwt')
 @ControllerApp('user', 'User')
 export class UserController {

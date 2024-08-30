@@ -39,9 +39,6 @@ export class MeasurementEntity {
   @Column({ type: 'boolean', default: false })
   confirmed: boolean;
 
-  @Column()
-  image_url: string;
-
   @Column({ type: 'int' })
   monthMeasurement: number;
 
